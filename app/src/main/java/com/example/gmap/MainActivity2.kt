@@ -1,11 +1,15 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.gmap
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,7 +21,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.Task
+
 
 class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener,
@@ -30,6 +34,7 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     var mLastLocation: Location? = null
     var mLocationRequest: LocationRequest? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -41,6 +46,7 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 //        if (!checkPermissions()) {
 //            requestPermissions()
 //        }
+
         mGoogleApiClient = GoogleApiClient.Builder(this)
             .addConnectionCallbacks(this)
             .addOnConnectionFailedListener(this)
@@ -59,6 +65,8 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onConnected(p0: Bundle?) {
+        if (!mGoogleApiClient!!.isConnected) mGoogleApiClient!!.connect()
+
         settingRequest()
     }
 
