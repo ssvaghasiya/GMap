@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,6 +24,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import java.io.IOException
 import java.util.*
 
@@ -42,6 +50,66 @@ class MainActivity4 : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
+
+        val apiKey = getString(R.string.map_key)
+
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(applicationContext, apiKey)
+        }
+
+
+        // Create a new Places client instance.
+        val placesClient: PlacesClient = Places.createClient(this)
+
+        // Initialize the AutocompleteSupportFragment.
+
+        // Initialize the AutocompleteSupportFragment.
+        val autocompleteFragment: AutocompleteSupportFragment? =
+            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment?
+//        autocompleteFragment!!.setLocationBias(RectangularBounds.newInstance(LatLng(0.313611,32.581111),LatLng(0.313611,32.581111)))
+//        autocompleteFragment!!.setCountries("UG")
+        autocompleteFragment!!.setPlaceFields(
+            Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
+            )
+        )
+
+        autocompleteFragment!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                // TODO: Get info about the selected place.
+                Log.e(
+                    "TAG",
+                    "Place: " + place.getName()
+                        .toString() + ", " + place.getId() + ", " + place.address
+                )
+                myLatitude = place.latLng!!.latitude
+                myLongitude = place.latLng!!.longitude
+
+                mMap!!.clear()
+                if (marker != null) {
+                    marker!!.remove();
+                }
+                marker = mMap!!.addMarker(
+                    MarkerOptions().position(place.latLng!!).title("Current Location")
+                )
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
+            }
+
+            override fun onError(status: Status) {
+                // TODO: Handle the error.
+                Log.e("TAG", "An error occurred: $status")
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
