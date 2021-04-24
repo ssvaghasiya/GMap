@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -203,5 +205,24 @@ class MainActivity4 : AppCompatActivity(), OnMapReadyCallback {
                 })
         val alert: AlertDialog = builder.create()
         alert.show()
+    }
+
+    fun onMapSearch(view: View?) {
+        val locationSearch: EditText = findViewById<View>(R.id.editText) as EditText
+        val location: String = locationSearch.getText().toString()
+        var addressList: List<Address>? = null
+        if (location != null || location != "") {
+            val geocoder = Geocoder(this)
+            try {
+                addressList = geocoder.getFromLocationName(location, 1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            val address = addressList!![0]
+            val latLng = LatLng(address.latitude, address.longitude)
+            mMap!!.clear()
+            mMap!!.addMarker(MarkerOptions().position(latLng).title("Marker"))
+            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+        }
     }
 }

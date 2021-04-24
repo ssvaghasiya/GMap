@@ -27,9 +27,9 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener,
     LocationListener {
 
-    var _latitude: TextView? = null
-    var _longitude: TextView? = null
-    var _progressBar: ProgressBar? = null
+    private var _latitude: TextView? = null
+    private var _longitude: TextView? = null
+    private var _progressBar: ProgressBar? = null
     var mGoogleApiClient: GoogleApiClient? = null
     var mLastLocation: Location? = null
     var mLocationRequest: LocationRequest? = null
@@ -39,13 +39,9 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        _latitude = findViewById(R.id.latitude) as TextView
-        _longitude = findViewById(R.id.longitude) as TextView
-        _progressBar = findViewById(R.id.progressBar) as ProgressBar
-
-//        if (!checkPermissions()) {
-//            requestPermissions()
-//        }
+        _latitude = findViewById<TextView>(R.id.latitude)
+        _longitude = findViewById<TextView>(R.id.longitude)
+        _progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
         mGoogleApiClient = GoogleApiClient.Builder(this)
             .addConnectionCallbacks(this)
@@ -98,7 +94,7 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         _longitude!!.text = "Longitude: " + mLastLocation!!.longitude.toString()
     }
 
-    fun settingRequest() {
+    private fun settingRequest() {
         try {
             mLocationRequest = LocationRequest()
             mLocationRequest!!.interval = 10000 // 10 seconds, in milliseconds
@@ -211,6 +207,7 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    @Suppress("DEPRECATED_IDENTITY_EQUALS")
     fun getLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -220,13 +217,6 @@ class MainActivity2 : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) !== PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             requestPermissions()
             return
         } else {
