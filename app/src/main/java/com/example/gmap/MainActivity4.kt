@@ -84,7 +84,7 @@ class MainActivity4 : AppCompatActivity(), OnMapReadyCallback {
             )
         )
 
-        autocompleteFragment!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
                 Log.e(

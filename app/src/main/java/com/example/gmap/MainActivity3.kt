@@ -16,15 +16,7 @@ import androidx.core.app.ActivityCompat
 class MainActivity3 : AppCompatActivity(), LocationListener {
 
     var locationManager: LocationManager? = null
-    var locationListener: LocationListener? = null
-    var context: Context? = null
     var txtLat: TextView? = null
-    var lat: String? = null
-    var provider: String? = null
-    var latitude: String? = null
-    var longitude: kotlin.String? = null
-    var gps_enabled = false
-    var network_enabled: kotlin.Boolean = false
     var REQUEST_PERMISSIONS_REQUEST_CODE = 1001
 
 
